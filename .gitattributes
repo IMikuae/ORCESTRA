@@ -1,0 +1,7 @@
+# Normalisasi baris demi konsistensi lintas OS
+* text=auto
+
+# Script harus tetap LF agar bisa dieksekusi di Linux/macOS/Git Bash
+*.sh text eol=lf
+*.mjs text eol=lf
+*.py text eol=lf
