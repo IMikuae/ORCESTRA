@@ -1,7 +1,4 @@
-# Normalisasi baris demi konsistensi lintas OS
-* text=auto
-
-# Script harus tetap LF agar bisa dieksekusi di Linux/macOS/Git Bash
-*.sh text eol=lf
-*.mjs text eol=lf
-*.py text eol=lf
+# Normalisasi baris demi konsistensi lintas OS.
+# LF dipakai di semua checkout agar script tetap bisa dieksekusi
+# dan self-check tidak gagal di Windows.
+* text=auto eol=lf

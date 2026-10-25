@@ -38,7 +38,8 @@ function check(ok, label, detail = "") {
 }
 
 function read(p) {
-  return fs.readFileSync(p, "utf8");
+  // Normalisasi CRLF: checkout Windows tidak boleh membuat self-check gagal.
+  return fs.readFileSync(p, "utf8").replace(/\r\n/g, "\n");
 }
 
 function sha(p) {
