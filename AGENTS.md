@@ -42,6 +42,12 @@ Cek berurutan:
 
 ## Aturan umum
 
+- `SETUP.md` adalah pintu masuk universal: bila user menyuruh agent apa pun
+  memasang orcestra, arahkan ke `SETUP.md`, bukan ke folder per platform.
+- Bila menambah dukungan platform baru: tambah baris `PLATFORMS` di
+  `install.sh` (+ deteksi bila ada), gate di `verify.mjs` §7, dan baris di
+  `README.md` §3. Jangan buat varian agent baru bila platform itu memakai
+  `SKILL.md` agentskills.io — cukup skill-only + catatan dispatch-nya.
 - **Jangan** mengubah `skills/orcestra/references/catalog.md` atau
   `catalog.index.json` kecuali diminta. Katalog berisi 921 deskripsi skill
   upstream yang sengaja **dipotong elipsis** (`…`) — jangan diluruskan,

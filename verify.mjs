@@ -307,6 +307,60 @@ check(exists(path.join(ROOT, "skills/orcestra/SKILL.md")),
     `dirs=${dirs.join(",")}`);
 }
 
+// --------------------------------------------------- 7. Hermes, SETUP & playbook baru
+
+console.log("\n=== 7. Hermes, SETUP & playbook baru ===");
+
+{
+  const shPath = path.join(ROOT, "install.sh");
+  if (exists(shPath)) {
+    const sh = read(shPath);
+    check(/"hermes\|/.test(sh), "install.sh punya target hermes di tabel PLATFORMS");
+    check(sh.includes("$HOME/.hermes") && /command -v hermes/.test(sh),
+      "install.sh mendeteksi Hermes (direktori + binary)");
+  } else {
+    check(false, "install.sh ada untuk pemeriksaan Hermes");
+  }
+}
+
+{
+  const setupPath = path.join(ROOT, "SETUP.md");
+  check(exists(setupPath), "SETUP.md ada");
+  if (exists(setupPath)) {
+    const t = read(setupPath);
+    check(/install\.sh/.test(t), "SETUP.md menyebut install.sh");
+    check(/hermes/i.test(t), "SETUP.md menyebut Hermes");
+    check(/external_dirs/.test(t),
+      "SETUP.md menyebut skills.external_dirs untuk instalasi project Hermes");
+    const lines = t.split("\n").length - (t.endsWith("\n") ? 1 : 0);
+    check(lines <= 120, "SETUP.md tetap singkat (<= 120 baris)", `actual=${lines}`);
+  }
+}
+
+for (const f of ["playbooks/backend-audit.md", "playbooks/ui-layout-audit.md",
+                 "references/execution-modes.md"]) {
+  check(exists(path.join(SKILL, f)), `skill berisi ${f}`);
+}
+
+{
+  const pbPath = path.join(SKILL, "playbooks/README.md");
+  if (exists(pbPath)) {
+    const pb = read(pbPath);
+    check(pb.includes("backend-audit.md") && pb.includes("ui-layout-audit.md"),
+      "playbooks/README.md mengindeks playbook audit baru");
+  } else {
+    check(false, "playbooks/README.md ada untuk pemeriksaan indeks");
+  }
+}
+
+if (exists(skillMd)) {
+  const sm = read(skillMd);
+  check(sm.includes("execution-modes.md"),
+    "SKILL.md menunjuk ke references/execution-modes.md");
+  check(sm.includes("backend-audit.md") && sm.includes("ui-layout-audit.md"),
+    "SKILL.md menunjuk ke playbook audit baru");
+}
+
 console.log(`\n================ RINGKASAN ================`);
 console.log(`PASS: ${pass}   FAIL: ${fail}`);
 console.log(fail === 0 ? "RESULT: OK — paket utuh." : "RESULT: GAGAL — paket rusak.");

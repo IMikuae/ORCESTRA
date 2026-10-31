@@ -12,6 +12,7 @@
 #   ./install.sh --global              # pasang ke home dir (semua project)
 #   ./install.sh --target /path/proj   # pasang ke project lain
 #   ./install.sh --agent opencode claude-code
+#   ./install.sh --agent hermes        # skill saja (Hermes memakai SKILL.md agentskills.io)
 #   ./install.sh --dry-run             # rencana saja, tidak menulis
 #   ./install.sh --uninstall           # copot dari project ini
 #
@@ -73,6 +74,7 @@ PLATFORMS=(
   "opencode|.opencode/skills|$HOME/.config/opencode/skills|.opencode/agents|$HOME/.config/opencode/agents|opencode"
   "claude-code|.claude/skills|$HOME/.claude/skills|.claude/agents|$HOME/.claude/agents|claude"
   "universal|.agents/skills|$HOME/.agents/skills||"
+  "hermes|.hermes/skills|$HOME/.hermes/skills||"
 )
 
 # --------------------------------------------------- deteksi platform
@@ -80,7 +82,7 @@ PLATFORMS=(
 detect_agents() {
   local found=()
   local d
-  for d in "$HOME/.config/opencode" "$HOME/.opencode" "$HOME/.claude" "$HOME/.codex" "$HOME/.cursor"; do
+  for d in "$HOME/.config/opencode" "$HOME/.opencode" "$HOME/.claude" "$HOME/.codex" "$HOME/.cursor" "$HOME/.hermes"; do
     [[ -d "$d" ]] && found+=("1")
   done
   # opencode
@@ -91,6 +93,8 @@ detect_agents() {
   command -v codex >/dev/null 2>&1 && found+=("1")
   # cursor
   command -v cursor >/dev/null 2>&1 && found+=("1")
+  # hermes
+  command -v hermes >/dev/null 2>&1 && found+=("1")
   (( ${#found[@]} > 0 )) || return 1
   return 0
 }
@@ -99,14 +103,14 @@ if [[ ${#AGENTS[@]} -eq 0 ]]; then
   if detect_agents; then
     # Ada minimal satu agent di host ini.
     #
-    # Default: pasang ke SEMUA direktori skill. Alasannya — ketiga direktori
+    # Default: pasang ke SEMUA direktori skill. Alasannya — keempat direktori
     # itu dibaca agent yang berbeda, dan isi salinannya identik, jadi tidak
     # ada konflik. Ini yang membuat "clone lalu suruh add" langsung jalan
     # tanpa perlu tahu agent mana yang dipakai.
-    AGENTS=(opencode claude-code universal)
+    AGENTS=(opencode claude-code universal hermes)
   else
     echo "Tidak menemukan agent di host ini — memasang ke semua direktori tetap aman." >&2
-    AGENTS=(opencode claude-code universal)
+    AGENTS=(opencode claude-code universal hermes)
   fi
 fi
 
@@ -193,6 +197,13 @@ for entry in "${PLATFORMS[@]}"; do
       for a in "${AGENTS[@]}"; do
         case "$a" in
           codex|cursor|agents|gemini|cline|zed|warp) wanted=1 ;;
+        esac
+      done
+      ;;
+    hermes)
+      for a in "${AGENTS[@]}"; do
+        case "$a" in
+          hermes-agent) wanted=1 ;;
         esac
       done
       ;;
@@ -286,6 +297,12 @@ if command -v opencode >/dev/null 2>&1 && [[ $DRY_RUN -eq 0 ]]; then
   info "cek dengan OpenCode:"
   info "  opencode debug agents"
   info "  opencode api get /api/skill"
+fi
+
+if command -v hermes >/dev/null 2>&1 && [[ $DRY_RUN -eq 0 ]]; then
+  info "cek dengan Hermes:"
+  info "  mulai sesi baru, lalu panggil skill orcestra"
+  [[ $GLOBAL -eq 0 ]] && info "  (project: daftarkan .hermes/skills di skills.external_dirs pada config.yaml Hermes)"
 fi
 
 step "Selesai."
