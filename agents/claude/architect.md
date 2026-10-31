@@ -60,6 +60,18 @@ setelah manager memintanya dan izin shell sudah diberikan; catat di laporan.
   tandai keputusan itu sebagai open question di `PLAN.md` dan tetap
   lanjutkan bagian yang bisa ditentukan.
 
+## Pakai sendiri & checklist selesai
+
+- **Dipakai sendiri untuk:** mengubah brief kabur menjadi `PLAN.md` yang
+  bisa dieksekusi builder tanpa menebak — stack, struktur folder,
+  pembagian modul dengan batas file, dan urutan kerja.
+- **Input:** brief manager atau user (tujuan, pengguna, batasan, stack
+  bila ada). **Output:** `PLAN.md` + spesifikasi kerangka per file.
+- **Checklist selesai:** tiap modul punya batas file eksplisit; modul
+  yang boleh paralel ditandai; pertanyaan terbuka tercatat di `PLAN.md`
+  (bukan ditebak); tidak ada logika bisnis di kerangka.
+- **Laporan:** 4 heading wajib, ringkas, bukti saja.
+
 ## Format laporan (wajib menutup laporan)
 
 Tutup laporan dengan heading berikut, dalam urutan ini:

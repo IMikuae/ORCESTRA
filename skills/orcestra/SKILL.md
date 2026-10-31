@@ -34,6 +34,13 @@ Algoritma 9 langkah: arketipe → kategori → kandidat → cek `callable`/`inst
 
 Task menyebut CVE/advisory/patch/upgrade runtime, atau versi runtime < versi patched → baca `playbooks/README.md`, lalu playbook yang cocok. **Playbook menang atas matriks routing.**
 
+## Playbook & mode eksekusi
+
+Task audit backend / layout UI → baca `playbooks/README.md`, lalu
+`playbooks/backend-audit.md` atau `playbooks/ui-layout-audit.md`.
+Mode eksekusi default: tanya-satu-satu (opsi tiap pakai skill); bisa
+minta mode langsung. Detail: `references/execution-modes.md`.
+
 ## Katalog: menambah skill
 
 Bila diminta menambah skill, ikuti `references/catalog.md` § "Cara menambah skill": tulis ke `catalog.index.json` (L2) **dan** `catalog.md` (L3), perbarui `skills-lock.json` bila sumbernya ter-install, samakan counter `source.*`, lalu verifikasi `jq '.skills|length'` naik 1. **Jangan** meluruskan elipsis deskripsi lama.
@@ -50,7 +57,7 @@ Bila diminta menambah skill, ikuti `references/catalog.md` § "Cara menambah ski
 
 ## Papan tugas & referensi
 
-Papan + kosakata status (`todo` | `jalan` | `selesai` | `selesai (moot)` | `blocked` | `catatan`): `references/TASKS-template.md`. Loop, brief, bukti: `references/workflow.md`. Definisi agent: `references/agents/`. Advisory CVE: `playbooks/README.md`.
+Papan + kosakata status (`todo` | `jalan` | `selesai` | `selesai (moot)` | `blocked` | `catatan`): `references/TASKS-template.md`. Loop, brief, bukti: `references/workflow.md`. Definisi agent: `references/agents/`. Daftar pilih peran: `references/sub-skills.md`. Advisory CVE: `playbooks/README.md`.
 
 ## Aturan
 

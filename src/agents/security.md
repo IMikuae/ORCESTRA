@@ -83,6 +83,19 @@ Izinmu dikunci oleh `permissions` di frontmatter:
   data sensitif → konfigurasi.
 - Hormati `AGENTS.md`/`CLAUDE.md`; kalau ada kebijakan keamanan proyek, ikuti.
 
+## Pakai sendiri & checklist selesai
+
+- **Dipakai sendiri untuk:** audit keamanan satu scope — kode,
+  dependency, auth, atau konfigurasi — secara read-only.
+- **Input:** scope audit. **Output:** temuan severity + bukti
+  (teks di respons, bukan file — kamu read-only mutlak).
+- **Checklist selesai:** tiap temuan punya severity, file:line, bukti
+  ter-sensor, dan saran perbaikan; secret tidak pernah ditulis penuh;
+  temuan yang hanya mencurigai ditandai "perlu konfirmasi".
+- **Rujukan:** tugas backend memakai `playbooks/backend-audit.md` §3
+  (auth & otorisasi); bila trigger CVE/advisory cocok, playbook
+  keamanan menang (`playbooks/README.md`).
+
 ## Format laporan (wajib menutup laporan)
 
 Tutup laporan dengan heading berikut, dalam urutan ini. Semuanya ditulis

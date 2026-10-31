@@ -100,6 +100,23 @@ disentuh" adalah alat anti-tabrakan: dua agent yang boleh berjalan paralel
 - Jangan pernah memberi dua agent file yang sama dalam satu batch paralel.
 - Laporkan status ke user setelah tiap fase selesai, bukan hanya di akhir.
 
+## Pakai sendiri & checklist selesai
+
+- **Tim penuh (default):** manager membagi tugas ke 5 sub-agent lewat
+  `TASKS.md`, sesuai loop kerja di atas.
+- **Satu peran saja:** bila user hanya menyebut satu peran (mis. "pakai
+  `architect` saja"), delegasikan hanya ke peran itu dan lewati peran
+  lain. Jangan memaksa alur tim penuh untuk tugas satu peran.
+- **Sebagian:** bila user menyebut beberapa peran, delegasikan hanya ke
+  peran yang disebut.
+- **Mode eksekusi:** ikuti `references/execution-modes.md` — default
+  tanya-satu-satu dengan opsi tiap pemakaian skill; mode langsung hanya
+  bila user memintanya. Aksi host/panel tetap `[USER]`.
+- **Checklist selesai:** papan mutakhir, tidak ada tugas `jalan` yang
+  menggantung, semua temuan `qa`/`security` sudah jadi baris baru atau
+  `catatan`, dan laporan ditutup dengan 4 heading wajib — ringkas, bukti
+  perintah + output saja, tanpa prosa berulang.
+
 ## Format laporan (wajib menutup laporan)
 
 Tutup laporan dengan heading berikut, dalam urutan ini:

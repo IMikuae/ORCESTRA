@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 #
-# install.sh — pasang skill `orcestra` ke agent coding di project atau home.
+# install.sh — pasang semua skill di `skills/` ke agent coding di project atau home.
 #
-# Paket ini berisi SATU skill (`skills/orcestra/`) dan TIGA varian definisi
-# sub-agent (`agents/opencode`, `agents/claude`, `agents/universal`).
-# Installer menyalin skill ke semua direktori skill yang dibaca agent, lalu
-# menyalin varian agent yang cocok ke direktori agent masing-masing.
+# Paket ini berisi skill-skill di `skills/` (`orcestra` + lainnya) dan TIGA
+# varian definisi sub-agent (`agents/opencode`, `agents/claude`, `agents/universal`).
+# Installer menyalin SETIAP skill ke semua direktori skill yang dibaca agent, lalu menyalin varian agent yang cocok ke direktori agent masing-masing.
+# Skill orcestra adalah orchestrator: ia menjalankan banyak skill terpasang.
 #
 # Pemakaian:
 #   ./install.sh                       # deteksi platform, pasang ke project ini
 #   ./install.sh --global              # pasang ke home dir (semua project)
 #   ./install.sh --target /path/proj   # pasang ke project lain
 #   ./install.sh --agent opencode claude-code
+#   ./install.sh --agent hermes        # skill saja (Hermes memakai SKILL.md agentskills.io)
 #   ./install.sh --dry-run             # rencana saja, tidak menulis
 #   ./install.sh --uninstall           # copot dari project ini
 #
 set -euo pipefail
 
 SELF_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_ID="orcestra"
-SKILL_SRC="$SELF_DIR/skills/$SKILL_ID"
+SKILLS_DIR="$SELF_DIR/skills"
 
 TARGET="$PWD"
 GLOBAL=0
@@ -48,7 +48,18 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -d "$SKILL_SRC" ]] || { echo "ERROR: skill tidak ditemukan: $SKILL_SRC" >&2; exit 1; }
+# Daftar skill: semua direktori di skills/ yang berisi SKILL.md, kecuali
+# yang berawalan `_` (template, bukan skill). Tidak dikunci ke satu skill:
+# skill orcestra adalah orchestrator, skill lain terdaftar berdampingan.
+SKILLS=()
+for d in "$SKILLS_DIR"/*/; do
+  [[ -d "$d" ]] || continue
+  s="$(basename "$d")"
+  [[ "$s" == _* ]] && continue
+  [[ -f "$d/SKILL.md" ]] || continue
+  SKILLS+=("$s")
+done
+[[ ${#SKILLS[@]} -gt 0 ]] || { echo "ERROR: tidak ada skill di $SKILLS_DIR/" >&2; exit 1; }
 
 # ---------------------------------------------------------------- self-check
 #
@@ -73,6 +84,7 @@ PLATFORMS=(
   "opencode|.opencode/skills|$HOME/.config/opencode/skills|.opencode/agents|$HOME/.config/opencode/agents|opencode"
   "claude-code|.claude/skills|$HOME/.claude/skills|.claude/agents|$HOME/.claude/agents|claude"
   "universal|.agents/skills|$HOME/.agents/skills||"
+  "hermes|.hermes/skills|$HOME/.hermes/skills||"
 )
 
 # --------------------------------------------------- deteksi platform
@@ -80,7 +92,7 @@ PLATFORMS=(
 detect_agents() {
   local found=()
   local d
-  for d in "$HOME/.config/opencode" "$HOME/.opencode" "$HOME/.claude" "$HOME/.codex" "$HOME/.cursor"; do
+  for d in "$HOME/.config/opencode" "$HOME/.opencode" "$HOME/.claude" "$HOME/.codex" "$HOME/.cursor" "$HOME/.hermes"; do
     [[ -d "$d" ]] && found+=("1")
   done
   # opencode
@@ -91,6 +103,8 @@ detect_agents() {
   command -v codex >/dev/null 2>&1 && found+=("1")
   # cursor
   command -v cursor >/dev/null 2>&1 && found+=("1")
+  # hermes
+  command -v hermes >/dev/null 2>&1 && found+=("1")
   (( ${#found[@]} > 0 )) || return 1
   return 0
 }
@@ -99,14 +113,14 @@ if [[ ${#AGENTS[@]} -eq 0 ]]; then
   if detect_agents; then
     # Ada minimal satu agent di host ini.
     #
-    # Default: pasang ke SEMUA direktori skill. Alasannya — ketiga direktori
+    # Default: pasang ke SEMUA direktori skill. Alasannya — keempat direktori
     # itu dibaca agent yang berbeda, dan isi salinannya identik, jadi tidak
     # ada konflik. Ini yang membuat "clone lalu suruh add" langsung jalan
     # tanpa perlu tahu agent mana yang dipakai.
-    AGENTS=(opencode claude-code universal)
+    AGENTS=(opencode claude-code universal hermes)
   else
     echo "Tidak menemukan agent di host ini — memasang ke semua direktori tetap aman." >&2
-    AGENTS=(opencode claude-code universal)
+    AGENTS=(opencode claude-code universal hermes)
   fi
 fi
 
@@ -174,7 +188,7 @@ action="PASANG"
 [[ $UNINSTALL -eq 1 ]] && action="COPOT"
 
 step "orcestra installer — $action"
-info "sumber skill : $SKILL_SRC"
+info "sumber skill : $SKILLS_DIR/ (${SKILLS[*]})"
 info "tujuan       : $TARGET$([ "$GLOBAL" -eq 1 ] && echo ' (global)')"
 info "platform      : ${AGENTS[*]}"
 [[ $DRY_RUN -eq 1 ]] && info "MODE DRY-RUN — tidak ada file yang ditulis"
@@ -196,28 +210,40 @@ for entry in "${PLATFORMS[@]}"; do
         esac
       done
       ;;
+    hermes)
+      for a in "${AGENTS[@]}"; do
+        case "$a" in
+          hermes-agent) wanted=1 ;;
+        esac
+      done
+      ;;
   esac
 
   step "── $name ──"
 
   if [[ $GLOBAL -eq 1 ]]; then
-    skill_dst="$skill_glob/$SKILL_ID"
     agent_dst="$agent_glob"
   else
-    skill_dst="$TARGET/$skill_proj/$SKILL_ID"
     agent_dst="$TARGET/$agent_proj"
   fi
 
-  # --- skill ---
-  if [[ $UNINSTALL -eq 1 ]]; then
-    info "skill   : $skill_dst"
-    if [[ $DRY_RUN -eq 0 ]]; then remove_tree "$skill_dst"; fi
-  else
-    info "skill   : $skill_dst"
-    if [[ $DRY_RUN -eq 0 ]]; then
-      copy_tree "$SKILL_SRC" "$skill_dst"
+  # --- skill (semua skill terdaftar) ---
+  for skill in "${SKILLS[@]}"; do
+    if [[ $GLOBAL -eq 1 ]]; then
+      skill_dst="$skill_glob/$skill"
+    else
+      skill_dst="$TARGET/$skill_proj/$skill"
     fi
-  fi
+    if [[ $UNINSTALL -eq 1 ]]; then
+      info "skill   : $skill_dst"
+      if [[ $DRY_RUN -eq 0 ]]; then remove_tree "$skill_dst"; fi
+    else
+      info "skill   : $skill_dst"
+      if [[ $DRY_RUN -eq 0 ]]; then
+        copy_tree "$SKILLS_DIR/$skill" "$skill_dst"
+      fi
+    fi
+  done
 
   # --- sub-agent ---
   if [[ -n "$variant" && -n "$agent_proj" ]]; then
@@ -239,7 +265,7 @@ done
 
 step "Verifikasi"
 if [[ $UNINSTALL -eq 1 ]]; then
-  info "selesai — skill orcestra dicopot dari $TARGET"
+  info "selesai — semua skill dicopot dari $TARGET"
   exit 0
 fi
 
@@ -254,18 +280,23 @@ else
     for a in "${AGENTS[@]}"; do [[ "$a" == "$name" ]] && wanted=1; done
     [[ $wanted -eq 1 ]] || continue
     if [[ $GLOBAL -eq 1 ]]; then
-      skill_dst="$skill_glob/$SKILL_ID"
       agent_dst="$agent_glob"
     else
-      skill_dst="$TARGET/$skill_proj/$SKILL_ID"
       agent_dst="$TARGET/$agent_proj"
     fi
-    if [[ -f "$skill_dst/SKILL.md" ]]; then
-      info "OK  $skill_dst/SKILL.md"
-    else
-      warn "HILANG $skill_dst/SKILL.md"
-      fail=1
-    fi
+    for skill in "${SKILLS[@]}"; do
+      if [[ $GLOBAL -eq 1 ]]; then
+        skill_dst="$skill_glob/$skill"
+      else
+        skill_dst="$TARGET/$skill_proj/$skill"
+      fi
+      if [[ -f "$skill_dst/SKILL.md" ]]; then
+        info "OK  $skill_dst/SKILL.md"
+      else
+        warn "HILANG $skill_dst/SKILL.md"
+        fail=1
+      fi
+    done
     if [[ -n "$variant" && -n "$agent_proj" ]]; then
       # Harus tepat 5 sub-agent (manager primary TIDAK ikut ter-install).
       n=0
@@ -288,8 +319,15 @@ if command -v opencode >/dev/null 2>&1 && [[ $DRY_RUN -eq 0 ]]; then
   info "  opencode api get /api/skill"
 fi
 
+if command -v hermes >/dev/null 2>&1 && [[ $DRY_RUN -eq 0 ]]; then
+  info "cek dengan Hermes:"
+  info "  mulai sesi baru, lalu panggil skill orcestra"
+  [[ $GLOBAL -eq 0 ]] && info "  (project: daftarkan .hermes/skills di skills.external_dirs pada config.yaml Hermes)"
+fi
+
 step "Selesai."
 info "Mulai sesi agent baru agar skill & sub-agent terbaca."
 info "Lalu panggil: 'pakai skill orcestra' atau '@orcestra' (OpenCode)."
+info "Skill lain dipanggil dengan namanya masing-masing."
 
 exit "$fail"

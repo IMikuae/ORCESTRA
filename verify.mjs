@@ -96,6 +96,50 @@ if (exists(skillMd)) {
     "SKILL.md tidak memakai field V1 OpenCode");
 }
 
+// ------------------------------------------------------- 1b. skill lain (multi-skill)
+
+console.log("\n=== 1b. Skill lain (multi-skill, tanpa kunci satu skill) ===");
+
+{
+  const skillDirs = fs.readdirSync(path.join(ROOT, "skills"))
+    .filter((d) => !d.startsWith("_"))
+    .filter((d) => fs.statSync(path.join(ROOT, "skills", d)).isDirectory());
+  check(skillDirs.length >= 1, "minimal satu skill terdaftar",
+    `skills=${skillDirs.join(",")}`);
+  for (const dir of skillDirs) {
+    if (dir === "orcestra") continue; // sudah diperiksa di §1
+    const f = path.join(ROOT, "skills", dir, "SKILL.md");
+    check(exists(f), `skills/${dir}/SKILL.md ada`);
+    if (!exists(f)) continue;
+    const raw = read(f);
+    check(raw.startsWith("---\n"), `skills/${dir}/SKILL.md punya frontmatter YAML`);
+    const end = raw.indexOf("\n---", 3);
+    const fm = raw.slice(4, end);
+    const nameM = fm.match(/^name:\s*(.+)$/m);
+    const descM = fm.match(/^description:\s*(.+)$/m);
+    check(!!nameM, `skills/${dir}/SKILL.md frontmatter punya \`name\``);
+    if (nameM) {
+      const n = nameM[1].trim();
+      check(/^[a-z0-9]+(-[a-z0-9]+)*$/.test(n),
+        `skills/${dir}/SKILL.md \`name\` kebab-case lowercase`, `name=${n}`);
+      check(n === dir, `skills/${dir}/SKILL.md \`name\` cocok dengan nama folder skill`,
+        `name=${n}`);
+    }
+    check(!!descM, `skills/${dir}/SKILL.md frontmatter punya \`description\``);
+    if (descM) {
+      const d = descM[1].trim();
+      check(d.length > 0 && d.length <= 1024,
+        `skills/${dir}/SKILL.md \`description\` 1..1024 char`, `len=${d.length}`);
+    }
+    const words = raw.split(/\s+/).filter(Boolean).length;
+    const lines = raw.split("\n").length - (raw.endsWith("\n") ? 1 : 0);
+    check(words <= 500, `skills/${dir}/SKILL.md <= 500 kata`, `actual=${words}`);
+    check(lines <= 70, `skills/${dir}/SKILL.md <= 70 baris`, `actual=${lines}`);
+    check(!/^\s*(tools|temperature|prompt|permission|maxSteps|variant|model)\s*:/m.test(fm),
+      `skills/${dir}/SKILL.md tidak memakai field V1 OpenCode`);
+  }
+}
+
 // ------------------------------------------------------- 2. agent variants
 
 console.log("\n=== 2. Varian agent ===");
@@ -301,10 +345,98 @@ console.log("\n=== 6. Kompatibilitas `npx skills` ===");
 check(exists(path.join(ROOT, "skills/orcestra/SKILL.md")),
   "skills/orcestra/SKILL.md di root repo (pola discovery `npx skills add`)");
 {
-  const dirs = fs.readdirSync(path.join(ROOT, "skills"));
-  check(dirs.length === 1 && dirs[0] === "orcestra",
-    "hanya satu skill yang dikunci (tidak ada katalog 921 ikut ter-install)",
+  const dirs = fs.readdirSync(path.join(ROOT, "skills"))
+    .filter((d) => !d.startsWith("_"))
+    .filter((d) => fs.statSync(path.join(ROOT, "skills", d)).isDirectory());
+  check(dirs.includes("orcestra"),
+    "skill orcestra tetap terdaftar sebagai orchestrator",
     `dirs=${dirs.join(",")}`);
+  check(!dirs.some((d) => /^catalog/.test(d)),
+    "katalog 921 tidak ikut ter-install sebagai skill terpisah",
+    `dirs=${dirs.join(",")}`);
+  const sh = exists(path.join(ROOT, "install.sh")) ? read(path.join(ROOT, "install.sh")) : "";
+  check(/for skill in "\$\{SKILLS\[@\]\}"/.test(sh),
+    "install.sh memasang semua skill (loop multi-skill, bukan satu skill)");
+}
+
+// --------------------------------------------------- 7. Hermes, SETUP & playbook baru
+
+console.log("\n=== 7. Hermes, SETUP & playbook baru ===");
+
+{
+  const shPath = path.join(ROOT, "install.sh");
+  if (exists(shPath)) {
+    const sh = read(shPath);
+    check(/"hermes\|/.test(sh), "install.sh punya target hermes di tabel PLATFORMS");
+    check(sh.includes("$HOME/.hermes") && /command -v hermes/.test(sh),
+      "install.sh mendeteksi Hermes (direktori + binary)");
+  } else {
+    check(false, "install.sh ada untuk pemeriksaan Hermes");
+  }
+}
+
+{
+  const setupPath = path.join(ROOT, "SETUP.md");
+  check(exists(setupPath), "SETUP.md ada");
+  if (exists(setupPath)) {
+    const t = read(setupPath);
+    check(/install\.sh/.test(t), "SETUP.md menyebut install.sh");
+    check(/hermes/i.test(t), "SETUP.md menyebut Hermes");
+    check(/external_dirs/.test(t),
+      "SETUP.md menyebut skills.external_dirs untuk instalasi project Hermes");
+    const lines = t.split("\n").length - (t.endsWith("\n") ? 1 : 0);
+    check(lines <= 120, "SETUP.md tetap singkat (<= 120 baris)", `actual=${lines}`);
+  }
+}
+
+for (const f of ["playbooks/backend-audit.md", "playbooks/ui-layout-audit.md",
+                 "references/execution-modes.md"]) {
+  check(exists(path.join(SKILL, f)), `skill berisi ${f}`);
+}
+
+{
+  const pbPath = path.join(SKILL, "playbooks/README.md");
+  if (exists(pbPath)) {
+    const pb = read(pbPath);
+    check(pb.includes("backend-audit.md") && pb.includes("ui-layout-audit.md"),
+      "playbooks/README.md mengindeks playbook audit baru");
+  } else {
+    check(false, "playbooks/README.md ada untuk pemeriksaan indeks");
+  }
+}
+
+if (exists(skillMd)) {
+  const sm = read(skillMd);
+  check(sm.includes("execution-modes.md"),
+    "SKILL.md menunjuk ke references/execution-modes.md");
+  check(sm.includes("backend-audit.md") && sm.includes("ui-layout-audit.md"),
+    "SKILL.md menunjuk ke playbook audit baru");
+}
+
+// --------------------------------------------------- 8. Sub-skills
+
+console.log("\n=== 8. Sub-skills (daftar pilih peran) ===");
+
+{
+  const subPath = path.join(SKILL, "references/sub-skills.md");
+  check(exists(subPath), "references/sub-skills.md ada");
+  if (exists(subPath)) {
+    const t = read(subPath);
+    const roles = ["manager", "architect", "builder", "debugger", "qa", "security"];
+    check(roles.every((r) => t.includes(`\`${r}\``)),
+      "sub-skills.md mendaftar keenam peran", `roles=${roles.length}`);
+  }
+}
+
+if (exists(skillMd)) {
+  check(read(skillMd).includes("sub-skills.md"),
+    "SKILL.md menunjuk ke references/sub-skills.md");
+}
+
+for (const n of ALL) {
+  const s = path.join(SRC, `${n}.md`);
+  check(exists(s) && read(s).includes("Pakai sendiri & checklist selesai"),
+    `src/agents/${n}.md punya bagian Pakai sendiri & checklist selesai`);
 }
 
 console.log(`\n================ RINGKASAN ================`);

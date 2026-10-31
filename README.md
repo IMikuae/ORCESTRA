@@ -1,7 +1,7 @@
 # orcestra
 
-**Skill agent multi-agent untuk OpenCode V2, Claude Code, Codex, Cursor, dan agent
-lain yang mendukung [Agent Skills](https://agentskills.io).**
+**Skill agent multi-agent untuk OpenCode V2, Claude Code, Codex, Cursor, Hermes,
+dan agent lain yang mendukung [Agent Skills](https://agentskills.io).**
 
 Satu repo, satu perintah, banyak platform. Clone → bilang "tambahkan orcestra"
 ke AI → agent itu menjalankan `install.sh` → skill aktif.
@@ -12,12 +12,14 @@ ke AI → agent itu menjalankan `install.sh` → skill aktif.
 
 | Komponen | Isi |
 |---|---|
-| `skills/orcestra/` | **Skill** — `SKILL.md` + `references/` (routing, katalog 921 skill, workflow) + `playbooks/` (CVE/advisory) |
+| `skills/orcestra/` | **Skill utama (orchestrator)** — `SKILL.md` + `references/` (routing, katalog 921 skill, workflow, mode eksekusi) + `playbooks/` (advisory, audit backend, audit UI) |
+| `skills/audit-proyek/` | **Skill audit** — audit proyek sekali jalan (backend, layout UI, keamanan kilat) → temuan siap jadi baris `TASKS.md` |
 | `agents/opencode/` | 6 agent OpenCode V2 (5 sub-agent + manager) — `permissions:` berurutan |
 | `agents/claude/` | 6 agent Claude Code (5 sub-agent + manager) — `tools:` / `disallowedTools:` |
 | `agents/universal/` | 6 agent Agent Skills spec — untuk Codex, Cursor, dan lainnya |
 | `src/agents/` | Sumber tunggal; `build.py` merender ketiga varian darinya |
 | `install.sh` | Installer multi-platform (deteksi otomatis) |
+| `SETUP.md` | Instruksi setup universal — dibaca agent apa pun, tanpa folder per platform |
 
 ---
 
@@ -46,6 +48,9 @@ repo, jalankan ./install.sh, lalu verifikasi hasilnya dan laporkan ke saya
 platform mana yang terpasang dan ke direktori mana.
 ```
 
+Alternatif: bilang "baca SETUP.md dan pasang orcestra" — langkahnya sama,
+berlaku untuk agent apa pun.
+
 ### Cara B — satu perintah (manual)
 
 ```bash
@@ -58,11 +63,12 @@ Opsi:
 
 ```bash
 ./install.sh --agent opencode claude-code   # pilih platform tertentu
+./install.sh --agent hermes                # skill saja (Hermes)
 ./install.sh --global                        # pasang untuk semua project (home dir)
 ./install.sh --target /path/ke/project       # pasang ke project lain
 ./install.sh --dry-run                       # tampilkan rencana, tanpa menulis
 ./install.sh --uninstall                     # copot dari project ini
-node verify.mjs                              # cek paket utuh (175 pemeriksaan)
+node verify.mjs                              # cek paket utuh (210 pemeriksaan)
 ```
 
 ### Cara C — `npx skills` (ecosystem resmi, 75+ agent)
@@ -72,6 +78,8 @@ npx skills add IMikuae/ORCESTRA --skill orcestra -a opencode -a claude-code -a c
 ```
 
 CLI `skills` mencari skill di `skills/<nama>/SKILL.md` — letaknya sudah sesuai.
+Pasang per skill dengan `--skill <nama>`; ulangi flag-nya untuk beberapa skill
+(mis. `--skill orcestra --skill audit-proyek`).
 
 > **Catatan:** `npx skills` hanya memasang **skill**. Enam definisi agent
 > (5 sub-agent + manager) harus disalin manual — pakai `install.sh` (Cara B)
@@ -83,10 +91,14 @@ CLI `skills` mencari skill di `skills/<nama>/SKILL.md` — letaknya sudah sesuai
 
 | Platform | Skill | Sub-agent |
 |---|---|---|
-| **OpenCode V2** | `.opencode/skills/orcestra/` | `.opencode/agents/*.md` |
-| **Claude Code** | `.claude/skills/orcestra/` | `.claude/agents/*.md` |
-| **Codex / Cursor / Cline / Gemini / Zed / Warp / …** | `.agents/skills/orcestra/` | — (lihat §6) |
-| **Global (semua project)** | `~/.config/opencode/skills/`, `~/.claude/skills/`, `~/.agents/skills/` | `~/.config/opencode/agents/`, `~/.claude/agents/` |
+| **OpenCode V2** | `.opencode/skills/<skill>/` | `.opencode/agents/*.md` |
+| **Claude Code** | `.claude/skills/<skill>/` | `.claude/agents/*.md` |
+| **Codex / Cursor / Cline / Gemini / Zed / Warp / …** | `.agents/skills/<skill>/` | — (lihat §6) |
+| **Hermes** | `.hermes/skills/<skill>/` | — (skill saja; delegasi via `delegate_tool`) |
+| **Global (semua project)** | `~/.config/opencode/skills/<skill>/`, `~/.claude/skills/<skill>/`, `~/.agents/skills/<skill>/`, `~/.hermes/skills/<skill>/` | `~/.config/opencode/agents/`, `~/.claude/agents/` |
+
+Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`
+dan `audit-proyek`. Installer memasang semuanya sekaligus, bukan satu skill saja.
 
 Tiga lokasi skill di atas **saling dibaca** oleh masing-masing agent. Installer
 menulis ke semuanya, jadi agent mana pun yang kamu pakai akan menemukannya.
@@ -149,7 +161,7 @@ untuk semuanya. Jangan menjanjikan "saya menjalankan skill X".
 
 ## 6. Platform tanpa format sub-agent
 
-Codex, Cursor, Cline, Gemini CLI, Zed, Warp, dan agent lain yang hanya mendukung
+Codex, Cursor, Hermes, Cline, Gemini CLI, Zed, Warp, dan agent lain yang hanya mendukung
 *skill* (bukan sub-agent terpisah) tetap dapat memakai orcestra:
 
 1. **Skill-nya terpasang** di `.agents/skills/orcestra/` → AI memuatnya saat
@@ -160,6 +172,10 @@ Codex, Cursor, Cline, Gemini CLI, Zed, Warp, dan agent lain yang hanya mendukung
    sebagai kontrak lengkap di `agents/universal/*.md`. AI dapat memperlakukan
    tiap peran sebagai "sub-agent" melalui fitur multi-agent yang dimilikinya,
    atau meniru peran tersebut secara bergilir dalam satu sesi.
+
+Hermes: skill terpasang di `~/.hermes/skills/orcestra/` (global) atau
+`.hermes/skills/orcestra/` (project, daftarkan di `skills.external_dirs` pada
+`config.yaml`). Sub-agent didispatch lewat `delegate_tool`, bukan tool Agent.
 
 Platform yang punya format sub-agent sendiri (OpenCode, Claude Code) memakai
 varian masing-masing agar batas file ditegakkan oleh sistem, bukan sekadar
@@ -174,6 +190,7 @@ orcestra/
 ├── README.md                  ← file ini
 ├── AGENTS.md                  ← instruksi untuk AI: apa yang harus dilakukan saat
 │                                user minta "tambahkan orcestra"
+├── SETUP.md                   ← instruksi setup universal untuk agent apa pun
 ├── install.sh                 ← installer multi-platform
 ├── LICENSE                    ← MIT
 ├── build.py                   ← render varian agent dari src/agents/
@@ -189,13 +206,20 @@ orcestra/
 │   │   ├── catalog.index.json   ← L2: 921 skill, machine-readable
 │   │   ├── catalog.md           ← L3: 921 baris + cara menambah skill
 │   │   ├── workflow.md          ← loop, brief, bukti, tabrakan file
+│   │   ├── execution-modes.md   ← mode tanya-satu-satu vs langsung
+│   │   ├── sub-skills.md        ← daftar pilih: semua tim atau satu peran
 │   │   ├── TASKS-template.md    ← papan tugas
 │   │   └── agents/              ← 5 sub-agent + manager (OpenCode flavour)
 │   └── playbooks/
 │       ├── README.md            ← indeks + kapan dipakai
 │       ├── _TEMPLATE.md
 │       ├── runtime-patching.md  ← advisory CVE / upgrade runtime
+│       ├── backend-audit.md     ← checklist audit backend
+│       ├── ui-layout-audit.md   ← checklist audit layout UI
 │       └── scripts/verify-runtime-patching.sh
+├── skills/audit-proyek/       ← skill audit proyek sekali jalan
+│   ├── SKILL.md
+│   └── references/checklist.md  ← backend, layout UI, keamanan kilat
 ```
 
 ---
@@ -219,7 +243,7 @@ sebagainya. Untuk Codex/Cursor: skill muncul di daftar skill.
 Paket juga bisa dicek sendiri, tanpa memasang apa pun:
 
 ```bash
-node verify.mjs     # 175 pemeriksaan: format frontmatter, paritas, katalog, link
+node verify.mjs     # 210 pemeriksaan: format frontmatter, paritas, katalog, link, multi-skill
 ```
 
 ---
@@ -232,6 +256,9 @@ node verify.mjs     # 175 pemeriksaan: format frontmatter, paritas, katalog, lin
 | Izin (permissions) | `src/agents/<peran>.md` (frontmatter `permissions:`) → `python3 build.py` |
 | Routing skill | `skills/orcestra/references/capabilities.md` |
 | Katalog skill | `skills/orcestra/references/catalog.md` § "Cara menambah skill" |
+| Mode eksekusi skill | `skills/orcestra/references/execution-modes.md` |
+| Skill baru | `skills/<nama-kebab>/SKILL.md` — installer memasangnya otomatis, gate `verify.mjs` §1b |
+| Dukungan platform baru | `install.sh` (tabel `PLATFORMS`) + `verify.mjs` §7 + `README.md` §3 |
 |.Playbook baru | `skills/orcestra/playbooks/_TEMPLATE.md` |
 
 Setelah mengubah `src/agents/`, **selalu** jalankan `python3 build.py` —Ia

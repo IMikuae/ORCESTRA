@@ -42,15 +42,34 @@ Cek berurutan:
 
 ## Aturan umum
 
+- `SETUP.md` adalah pintu masuk universal: bila user menyuruh agent apa pun
+  memasang orcestra, arahkan ke `SETUP.md`, bukan ke folder per platform.
+- Bila menambah dukungan platform baru: tambah baris `PLATFORMS` di
+  `install.sh` (+ deteksi bila ada), gate di `verify.mjs` §7, dan baris di
+  `README.md` §3. Jangan buat varian agent baru bila platform itu memakai
+  `SKILL.md` agentskills.io — cukup skill-only + catatan dispatch-nya.
 - **Jangan** mengubah `skills/orcestra/references/catalog.md` atau
   `catalog.index.json` kecuali diminta. Katalog berisi 921 deskripsi skill
   upstream yang sengaja **dipotong elipsis** (`…`) — jangan diluruskan,
   diterjemahkan, atau dilengkapi.
 - **Jangan** mengklaim katalog skill bisa dipanggil. Semua entri punya
   `callable: false` — katalog itu blueprint, bukan skill terpasang.
+- Paket ini **multi-skill**: `install.sh` memasang semua direktori di
+  `skills/` (kecuali yang berawalan `_`). Skill baru = satu direktori
+  `skills/<nama-kebab>/` berisi `SKILL.md` (frontmatter `name` = nama
+  direktori, `description` 1..1024 char, ≤500 kata / ≤70 baris) + file
+  pendukungnya sendiri; jangan menumpang file skill lain lewat path
+  relatif antar-skill, karena tiap skill disalin terpisah.
+- Skill `orcestra` adalah **orchestrator**: ia menjalankan banyak skill
+  terpasang. Bila task butuh skill lain yang ter-install (mis.
+  `audit-proyek`), manager memasukkannya ke brief dan papan — jangan
+  mengklaim menjalankannya sendiri tanpa bukti.
 - `skills/orcestra/` adalah skill Agent Skills (spec `agentskills.io`).
   `SKILL.md` harus tetap punya frontmatter `name` + `description` yang valid,
-  dan tetap di bawah batas 500 kata / 70 baris.
+  dan tetap di bawah batas 500 kata / 70 baris. Hitung kata dengan pemisah
+  whitespace ala JS (mis. `node`), bukan `wc -w` di locale POSIX — `wc`
+  melewatkan simbol multibyte seperti → dan — sehingga menghitung lebih
+  sedikit dari gate `verify.mjs`.
 - Semua path di dalam skill relatif terhadap folder skill-nya, supaya paket
   bisa disalin ke mana saja.
 - **Jangan** melakukan aksi di host/panel (restart, patch runtime, deploy)
@@ -70,7 +89,8 @@ bash skills/orcestra/playbooks/scripts/verify-runtime-patching.sh  # hanya bila
 
 | Path | Peran |
 |---|---|
-| `skills/orcestra/` | skill yang dipasang (Agent Skills spec) |
+| `skills/orcestra/` | skill utama (orchestrator) yang dipasang (Agent Skills spec) |
+| `skills/audit-proyek/` | skill audit proyek sekali jalan yang dipasang bersamaan |
 | `src/agents/` | sumber tunggal definisi agent |
 | `agents/{opencode,claude,universal}/` | hasil render `build.py` |
 | `build.py` | renderer + verifier pemetaan izin |
