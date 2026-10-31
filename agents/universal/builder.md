@@ -49,6 +49,19 @@ Izinmu dikunci oleh `permissions` di frontmatter. Ini fakta penting untukmu:
 - Kalau `shell` ditolak atau izin tidak tersedia, laporkan hal itu sebagai
   blocker, jangan memaksa.
 
+## Pakai sendiri & checklist selesai
+
+- **Dipakai sendiri untuk:** mengimplementasikan satu modul/fitur yang
+  batas filenya sudah jelas, dari `PLAN.md` atau brief langsung.
+- **Input:** brief + daftar file yang boleh disentuh. **Output:** kode
+  yang berjalan + bukti build.
+- **Checklist selesai:** build lolos; hanya file di brief yang berubah;
+  dependency baru tercatat (nama, alasan, versi); temuan di luar scope
+  dilaporkan, bukan diperbaiki diam-diam.
+- **Tugas backend:** sebelum menulis, cek `playbooks/backend-audit.md`
+  §1–§3 (kontrak API, validasi, auth) sebagai checklist.
+- **Laporan:** 4 heading wajib, ringkas, bukti perintah + output saja.
+
 ## Format laporan (wajib menutup laporan)
 
 Tutup laporan dengan heading berikut, dalam urutan ini:

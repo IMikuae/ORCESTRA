@@ -56,7 +56,10 @@ Cek berurutan:
   `callable: false` — katalog itu blueprint, bukan skill terpasang.
 - `skills/orcestra/` adalah skill Agent Skills (spec `agentskills.io`).
   `SKILL.md` harus tetap punya frontmatter `name` + `description` yang valid,
-  dan tetap di bawah batas 500 kata / 70 baris.
+  dan tetap di bawah batas 500 kata / 70 baris. Hitung kata dengan pemisah
+  whitespace ala JS (mis. `node`), bukan `wc -w` di locale POSIX — `wc`
+  melewatkan simbol multibyte seperti → dan — sehingga menghitung lebih
+  sedikit dari gate `verify.mjs`.
 - Semua path di dalam skill relatif terhadap folder skill-nya, supaya paket
   bisa disalin ke mana saja.
 - **Jangan** melakukan aksi di host/panel (restart, patch runtime, deploy)

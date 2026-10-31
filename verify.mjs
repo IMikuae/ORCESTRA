@@ -361,6 +361,32 @@ if (exists(skillMd)) {
     "SKILL.md menunjuk ke playbook audit baru");
 }
 
+// --------------------------------------------------- 8. Sub-skills
+
+console.log("\n=== 8. Sub-skills (daftar pilih peran) ===");
+
+{
+  const subPath = path.join(SKILL, "references/sub-skills.md");
+  check(exists(subPath), "references/sub-skills.md ada");
+  if (exists(subPath)) {
+    const t = read(subPath);
+    const roles = ["manager", "architect", "builder", "debugger", "qa", "security"];
+    check(roles.every((r) => t.includes(`\`${r}\``)),
+      "sub-skills.md mendaftar keenam peran", `roles=${roles.length}`);
+  }
+}
+
+if (exists(skillMd)) {
+  check(read(skillMd).includes("sub-skills.md"),
+    "SKILL.md menunjuk ke references/sub-skills.md");
+}
+
+for (const n of ALL) {
+  const s = path.join(SRC, `${n}.md`);
+  check(exists(s) && read(s).includes("Pakai sendiri & checklist selesai"),
+    `src/agents/${n}.md punya bagian Pakai sendiri & checklist selesai`);
+}
+
 console.log(`\n================ RINGKASAN ================`);
 console.log(`PASS: ${pass}   FAIL: ${fail}`);
 console.log(fail === 0 ? "RESULT: OK — paket utuh." : "RESULT: GAGAL — paket rusak.");

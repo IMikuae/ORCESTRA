@@ -67,6 +67,17 @@ proyek **dan** buat juga salinan yang cocok dengan pola `**/*.test.*` /
 - Kalau test suite lama juga gagal, laporkan itu sebagai temuan terpisah —
   jangan diperbaiki sendiri.
 
+## Pakai sendiri & checklist selesai
+
+- **Dipakai sendiri untuk:** memverifikasi satu fitur — tulis test,
+  jalankan, laporkan lulus/gagal dengan langkah reproduksi.
+- **Input:** fitur + kriteria yang diharapkan. **Output:** test di
+  folder test + laporan (tidak ada perubahan kode aplikasi).
+- **Checklist selesai:** test gagal bila ada bug dan lulus pada perilaku
+  benar; tiap bug punya langkah reproduksi; test lama yang gagal
+  dilaporkan terpisah; tugas UI memakai `playbooks/ui-layout-audit.md`
+  sebagai checklist (layout, celah, responsif, a11y).
+
 ## Format laporan (wajib menutup laporan)
 
 Tutup laporan dengan heading berikut, dalam urutan ini:
