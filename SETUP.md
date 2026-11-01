@@ -19,7 +19,7 @@ Tanpa perlu tahu folder per platform — `install.sh` yang mengurusnya.
 4. Verifikasi: `node verify.mjs` harus lolos semua, dan `SKILL.md` skill
    orcestra ada di direktori tujuan.
 5. Laporkan ke user: platform mana yang terpasang, ke direktori mana, dan
-   cara memakainya ("pakai skill orcestra").
+   cara memakainya ("pakai skill orcestra" atau nama skill lain).
 
 Jangan menyalin file manual kecuali `install.sh` gagal — kalau gagal,
 laporkan error-nya, jangan menebak.
@@ -28,10 +28,13 @@ laporkan error-nya, jangan menebak.
 
 | Platform | Skill (project) | Skill (global) | Sub-agent |
 |---|---|---|---|
-| OpenCode V2 | `.opencode/skills/orcestra/` | `~/.config/opencode/skills/orcestra/` | `.opencode/agents/` (5 sub-agent) |
-| Claude Code | `.claude/skills/orcestra/` | `~/.claude/skills/orcestra/` | `.claude/agents/` (5 sub-agent) |
-| Codex / Cursor / lainnya | `.agents/skills/orcestra/` | `~/.agents/skills/orcestra/` | — (skill saja) |
-| Hermes | `.hermes/skills/orcestra/` | `~/.hermes/skills/orcestra/` | — (skill saja) |
+| OpenCode V2 | `.opencode/skills/<skill>/` | `~/.config/opencode/skills/<skill>/` | `.opencode/agents/` (5 sub-agent) |
+| Claude Code | `.claude/skills/<skill>/` | `~/.claude/skills/<skill>/` | `.claude/agents/` (5 sub-agent) |
+| Codex / Cursor / lainnya | `.agents/skills/<skill>/` | `~/.agents/skills/<skill>/` | — (skill saja) |
+| Hermes | `.hermes/skills/<skill>/` | `~/.hermes/skills/<skill>/` | — (skill saja) |
+
+Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`
+dan `audit-proyek`. Installer memasang semuanya sekaligus.
 
 ## Catatan Hermes
 
@@ -56,5 +59,5 @@ Detail: `skills/orcestra/references/execution-modes.md`.
 
 - OpenCode: `opencode debug agents`, `opencode api get /api/skill`.
 - Claude Code: sub-agent muncul sebagai `/architect`, `/builder`, dst.
-- Codex/Cursor/Hermes: skill `orcestra` muncul di daftar skill.
+- Codex/Cursor/Hermes: skill terpasang muncul di daftar skill.
 - Semua platform: mulai sesi agent baru agar instalasi terbaca.
