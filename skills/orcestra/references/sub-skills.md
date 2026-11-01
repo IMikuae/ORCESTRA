@@ -51,6 +51,9 @@ Benar: selain `architect` masih ada lima peran lain — `manager`,
 | `database` | Merancang database: model, skema, indeks, migrasi aman, backup/restore | model + skema/migrasi + bukti restore |
 | `hardening` | Mengeraskan keamanan sampai terverifikasi ulang | temuan → perbaikan → verifikasi ulang |
 | `observability` | Membuat aplikasi terpantau: sinyal, log, metrik, alert, runbook | sinyal + alert + runbook + hasil uji alert |
+| `security-audit` | Audit keamanan mendalam: threat model, injeksi, XSS, CSRF, SSRF, IDOR, kripto | temuan severity + bukti |
+| `auth` | Membangun autentikasi & otorisasi: sesi, token, OAuth, RBAC, MFA, reset | alur auth + bukti test |
+| `incident-response` | Menangani insiden: triase, containment, eradikasi, pemulihan, postmortem | timeline + tindakan + postmortem |
 
 Skill `orcestra` sebagai orchestrator menjalankan banyak skill: bila task
 butuh skill terpasang lain (mis. `audit-proyek`), manager memasukkannya

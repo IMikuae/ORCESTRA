@@ -99,6 +99,9 @@ bash skills/orcestra/playbooks/scripts/verify-runtime-patching.sh  # hanya bila
 | `skills/database/` | skill rancang database yang dipasang bersamaan |
 | `skills/hardening/` | skill keraskan keamanan yang dipasang bersamaan |
 | `skills/observability/` | skill buat aplikasi terpantau yang dipasang bersamaan |
+| `skills/security-audit/` | skill audit keamanan mendalam yang dipasang bersamaan |
+| `skills/auth/` | skill bangun autentikasi & otorisasi yang dipasang bersamaan |
+| `skills/incident-response/` | skill tangani insiden keamanan yang dipasang bersamaan |
 | `src/agents/` | sumber tunggal definisi agent |
 | `agents/{opencode,claude,universal}/` | hasil render `build.py` |
 | `build.py` | renderer + verifier pemetaan izin |

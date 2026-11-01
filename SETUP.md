@@ -35,8 +35,9 @@ laporkan error-nya, jangan menebak.
 
 Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`,
 `audit-proyek`, `ui-layout`, `backend`, `deploy`, `testing`,
-`performance`, `database`, `hardening`, dan `observability`. Installer
-memasang semuanya sekaligus.
+`performance`, `database`, `hardening`, `observability`,
+`security-audit`, `auth`, dan `incident-response`. Installer memasang
+semuanya sekaligus.
 
 ## Catatan Hermes
 
