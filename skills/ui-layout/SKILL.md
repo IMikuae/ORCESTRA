@@ -18,7 +18,9 @@ menilai. Output: file layout/komponen + daftar cek yang lolos.
 
 `references/checklist.md` — struktur & spacing, responsif, overflow,
 state (loading/kosong/error), aksesibilitas. Ikuti urutannya; jangan
-melompati cek aksesibilitas karena "nanti saja".
+melompati cek aksesibilitas karena "nanti saja". Pola responsif
+(mobile-first, grid fluida, breakpoint berbasis konten, gambar
+responsif, container query) ada di `references/responsive-patterns.md`.
 
 ## Alur
 
