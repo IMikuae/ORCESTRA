@@ -29,6 +29,14 @@ tugas audit (`audit-proyek`, peran `security`).
 | Verifikasi | Tiap perbaikan diverifikasi ulang dengan cara yang sama dengan cara temuannya ditemukan |
 | Perubahan | Perubahan perilaku auth dicatat eksplisit |
 
+## 4. Rate limit & DDoS
+
+| Cek | Yang harus benar |
+|---|---|
+| Rate limit | Login dan endpoint sensitif dibatasi per IP/akun; banjir request ditahan di aplikasi |
+| Timeout & payload | Timeout dan batas ukuran payload dipasang; koneksi lambat tidak menggantung server |
+| WAF/CDN | Bila tersedia: WAF/CDN aktif dan guard autoscale dipasang (infra: `[USER]`) |
+
 ## Bukti serah terima
 
 - Daftar temuan → perbaikan → hasil verifikasi ulang, per temuan.
