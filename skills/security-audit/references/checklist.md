@@ -3,7 +3,8 @@
 Checklist audit keamanan mendalam untuk skill `security-audit`.
 Periksa hanya cakupan yang diminta; tiap temuan dicatat dengan
 lokasi, severity, bukti, dan cara reproduksi bila ada. Ini versi
-mendalam dari bagian keamanan kilat `audit-proyek`.
+mendalam dari bagian keamanan kilat `audit-proyek`. Detail tiap
+serangan (SQL injection, DDoS, dll) ada di `attack-catalog.md`.
 
 ## 1. Threat model & auth
 
@@ -18,7 +19,7 @@ mendalam dari bagian keamanan kilat `audit-proyek`.
 | Cek | Yang dicari |
 |---|---|
 | Otorisasi | Tiap endpoint memeriksa hak user; tidak ada IDOR/BOLA (akses data user lain lewat ID) |
-| Injeksi | SQL/NoSQL/perintah tidak bisa disuntik dari input; pakai parameter binding |
+| Injeksi | SQL/NoSQL/perintah/LDAP tidak bisa disuntik dari input; pakai parameter binding (detail: `attack-catalog.md`) |
 | XSS | Output di-encode sesuai konteks; tidak ada HTML mentah dari input user |
 
 ## 3. Serangan web & kripto
@@ -29,6 +30,8 @@ mendalam dari bagian keamanan kilat `audit-proyek`.
 | SSRF | URL dari user tidak bisa dipakai menyerang layanan internal |
 | Upload | File upload dibatasi tipe/ukuran dan tidak bisa dieksekusi sebagai kode |
 | Rate limit | Login dan endpoint sensitif dibatasi; tidak bisa brute force bebas |
+| DDoS | Rate limit, timeout, batas payload, dan WAF/CDN (infra) sudah siap; layanan tidak tumbang oleh banjir request |
+| XXE, SSTI & traversal | Parser XML tanpa DTD/entitas eksternal; template tidak dirender dari input; path dibatasi ke root |
 | Kripto & secret | Tidak ada secret di kode; kripto memakai pustaka standar, bukan buatan sendiri |
 
 ## Format temuan (siap jadi baris TASKS.md)

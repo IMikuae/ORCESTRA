@@ -19,9 +19,10 @@ dugaan. Kamu tidak memperbaiki — temuan menjadi tugas untuk
 ## Cakupan (baca checklist)
 
 `references/checklist.md` — threat model, auth & sesi, otorisasi,
-injeksi, XSS, CSRF, SSRF, upload, rate limit, kripto. Periksa hanya
-cakupan yang diminta; bila user bilang "audit semua", periksa
-semuanya berurutan.
+injeksi, XSS, CSRF, SSRF, upload, rate limit, kripto. Detail tiap
+serangan (SQL injection, DDoS, dll) ada di
+`references/attack-catalog.md`. Periksa hanya cakupan yang diminta;
+bila user bilang "audit semua", periksa semuanya berurutan.
 
 ## Alur
 

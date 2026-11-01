@@ -22,7 +22,7 @@ ke AI → agent itu menjalankan `install.sh` → skill aktif.
 | `skills/database/` | **Skill database** — merancang data: model & relasi, skema & indeks, migrasi aman, backup dan latihan restore |
 | `skills/hardening/` | **Skill hardening** — mengeraskan keamanan: header, cookie, secret, dependency, auth, sampai terverifikasi ulang |
 | `skills/observability/` | **Skill observability** — membuat aplikasi terpantau: sinyal utama, log, metrik, trace, alert yang bisa ditindak, runbook |
-| `skills/security-audit/` | **Skill audit keamanan** — audit mendalam: threat model, auth, injeksi, XSS, CSRF, SSRF, IDOR, upload, rate limit, kripto |
+| `skills/security-audit/` | **Skill audit keamanan** — audit mendalam: threat model, auth, injeksi, XSS, CSRF, SSRF, IDOR, upload, rate limit, kripto + katalog serangan (SQL injection, DDoS, dll) |
 | `skills/auth/` | **Skill auth** — membangun autentikasi & otorisasi: sesi, token & refresh, OAuth/OIDC, RBAC, MFA, reset password |
 | `skills/incident-response/` | **Skill insiden** — menangani insiden keamanan: triase, containment, eradikasi, pemulihan, postmortem |
 | `agents/opencode/` | 6 agent OpenCode V2 (5 sub-agent + manager) — `permissions:` berurutan |
