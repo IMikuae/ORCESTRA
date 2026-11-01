@@ -48,6 +48,9 @@ Benar: selain `architect` masih ada lima peran lain — `manager`,
 | `deploy` | Menyiapkan CI/CD dan deploy yang aman + rencana rollback | pipeline + checklist pra-rilis + bukti pasca-deploy |
 | `testing` | Menulis dan menjalankan test yang menemukan bug | test + hasil jalan + cakupan |
 | `performance` | Mengukur dan mengoptimalkan performa | angka sebelum-sesudah + file yang diubah |
+| `database` | Merancang database: model, skema, indeks, migrasi aman, backup/restore | model + skema/migrasi + bukti restore |
+| `hardening` | Mengeraskan keamanan sampai terverifikasi ulang | temuan → perbaikan → verifikasi ulang |
+| `observability` | Membuat aplikasi terpantau: sinyal, log, metrik, alert, runbook | sinyal + alert + runbook + hasil uji alert |
 
 Skill `orcestra` sebagai orchestrator menjalankan banyak skill: bila task
 butuh skill terpasang lain (mis. `audit-proyek`), manager memasukkannya
