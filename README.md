@@ -16,6 +16,9 @@ ke AI → agent itu menjalankan `install.sh` → skill aktif.
 | `skills/audit-proyek/` | **Skill audit** — audit proyek sekali jalan (backend, layout UI, keamanan kilat) → temuan siap jadi baris `TASKS.md` |
 | `skills/ui-layout/` | **Skill bangun UI** — membangun layout tanpa celah/overflow, responsif, semua state tertangani, terjangkau keyboard |
 | `skills/backend/` | **Skill bangun backend** — membangun API: endpoint, validasi server-side, auth per endpoint, migrasi berversi, format error konsisten |
+| `skills/deploy/` | **Skill rilis** — menyiapkan CI/CD dan deploy yang aman: pipeline, environment & secret, checklist pra-rilis, rencana rollback |
+| `skills/testing/` | **Skill test** — menulis dan menjalankan test yang menemukan bug: unit, integrasi, end-to-end, fixture, strategi cakupan |
+| `skills/performance/` | **Skill performa** — mengukur dan mengoptimalkan: baseline, bottleneck, optimasi bertahap, bukti sebelum-sesudah |
 | `agents/opencode/` | 6 agent OpenCode V2 (5 sub-agent + manager) — `permissions:` berurutan |
 | `agents/claude/` | 6 agent Claude Code (5 sub-agent + manager) — `tools:` / `disallowedTools:` |
 | `agents/universal/` | 6 agent Agent Skills spec — untuk Codex, Cursor, dan lainnya |
@@ -70,7 +73,7 @@ Opsi:
 ./install.sh --target /path/ke/project       # pasang ke project lain
 ./install.sh --dry-run                       # tampilkan rencana, tanpa menulis
 ./install.sh --uninstall                     # copot dari project ini
-node verify.mjs                              # cek paket utuh (230 pemeriksaan)
+node verify.mjs                              # cek paket utuh (260 pemeriksaan)
 ```
 
 ### Cara C — `npx skills` (ecosystem resmi, 75+ agent)
@@ -100,7 +103,8 @@ Pasang per skill dengan `--skill <nama>`; ulangi flag-nya untuk beberapa skill
 | **Global (semua project)** | `~/.config/opencode/skills/<skill>/`, `~/.claude/skills/<skill>/`, `~/.agents/skills/<skill>/`, `~/.hermes/skills/<skill>/` | `~/.config/opencode/agents/`, `~/.claude/agents/` |
 
 Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`,
-`audit-proyek`, `ui-layout`, dan `backend`. Installer memasang semuanya sekaligus, bukan satu skill saja.
+`audit-proyek`, `ui-layout`, `backend`, `deploy`, `testing`, dan
+`performance`. Installer memasang semuanya sekaligus, bukan satu skill saja.
 
 Tiga lokasi skill di atas **saling dibaca** oleh masing-masing agent. Installer
 menulis ke semuanya, jadi agent mana pun yang kamu pakai akan menemukannya.
@@ -228,6 +232,15 @@ orcestra/
 ├── skills/backend/            ← skill bangun API backend
 │   ├── SKILL.md
 │   └── references/checklist.md  ← API, validasi, auth, migrasi, error
+├── skills/deploy/             ← skill rilis yang aman
+│   ├── SKILL.md
+│   └── references/checklist.md  ← pipeline, secret, pra-rilis, rollback
+├── skills/testing/            ← skill menulis test yang menemukan bug
+│   ├── SKILL.md
+│   └── references/checklist.md  ← strategi, unit, integrasi, e2e, fixture
+├── skills/performance/        ← skill ukur & optimalkan performa
+│   ├── SKILL.md
+│   └── references/checklist.md  ← baseline, backend, frontend, bukti
 ```
 
 ---
@@ -251,7 +264,7 @@ sebagainya. Untuk Codex/Cursor: skill muncul di daftar skill.
 Paket juga bisa dicek sendiri, tanpa memasang apa pun:
 
 ```bash
-node verify.mjs     # 230 pemeriksaan: format frontmatter, paritas, katalog, link, multi-skill
+node verify.mjs     # 260 pemeriksaan: format frontmatter, paritas, katalog, link, multi-skill
 ```
 
 ---
