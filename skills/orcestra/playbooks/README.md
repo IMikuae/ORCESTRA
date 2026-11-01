@@ -18,6 +18,8 @@ Prosedur keamanan orcestra. Playbook **bukan skill terpisah** — prosedur yang 
 | File | Severity | Status | Scope | Kapan dibuka |
 |---|---|---|---|---|
 | [`runtime-patching.md`](./runtime-patching.md) | KRITIS | `active` | Node.js + Bun + PHP (Node2Shell, PHP2Shell) | Saat ada advisory runtime, versi runtime di bawah versi patched, atau runtime EOL |
+| [`backend-audit.md`](./backend-audit.md) | SEDANG | `active` | API + DB + auth + observabilitas | Saat task menyebut audit backend, review API/DB, atau "backend bermasalah" |
+| [`ui-layout-audit.md`](./ui-layout-audit.md) | SEDANG | `active` | Layout, responsif, a11y | Saat task menyebut audit UI/layout, "ada celah", overflow, atau tampilan rusak |
 | [`_TEMPLATE.md`](./_TEMPLATE.md) | — | template | Lintas komponen | Saat menulis playbook advisory baru |
 | [`scripts/verify-runtime-patching.sh`](./scripts/verify-runtime-patching.sh) | — | utilitas | Verifikasi §7 `runtime-patching.md` | Setelah patch/reload runtime — satu baris output per item §7, exit non-zero bila ada yang gagal |
 
@@ -40,6 +42,14 @@ Buka playbook bila salah satu berlaku:
 - **(b)** versi runtime hasil probe **<** versi patched pada tabel §2.
 - **(c)** ada skill katalog bertema runtime-patch yang relevan.
 - **(d)** task **bukan** soft issue, tapi runtime-nya EOL dan ada security release terbuka.
+
+## Pemicu playbook non-keamanan
+
+- Task menyebut audit backend / review API / database → `backend-audit.md`.
+- Task menyebut audit UI / layout / "ada celah" / overflow / tampilan rusak → `ui-layout-audit.md`.
+- Playbook non-keamanan tidak blocking seperti KRITIS/TINGGI: temuan jadi
+  baris `TASKS.md`, dan audit selesai bila checklist lolos — bukan dengan
+  mengulang perintah yang sama (lihat `../references/execution-modes.md`).
 
 ## Pemisahan agent vs user (mengikat)
 
