@@ -4,6 +4,9 @@ Satu skill utama, enam peran yang bisa dipakai **semua atau satu-satu**
 sesuai kebutuhan. Peran di sini sering disebut "sub-skill": kontrak kerja
 lengkap yang bisa dipanggil sendiri tanpa menjalankan seluruh tim.
 
+Di luar itu, paket ini multi-skill: skill lain terdaftar berdampingan dan
+dipasang sekaligus oleh `install.sh`, bukan dikunci ke satu skill saja.
+
 ## Skill utama
 
 | Nama | Jenis | Dipakai untuk |
@@ -34,6 +37,17 @@ Benar: selain `architect` masih ada lima peran lain — `manager`,
   menguji fitur ini".
 - **Sebagian:** sebutkan peran yang dipakai ("pakai `builder` dan `qa`
   saja") — manager hanya mendelegasikan ke peran yang disebut.
+
+## Skill lain yang terpasang
+
+| Skill | Dipakai untuk | Output |
+|---|---|---|
+| `audit-proyek` | Audit proyek sekali jalan: backend, layout UI, keamanan kilat | daftar temuan siap jadi baris `TASKS.md` |
+
+Skill `orcestra` sebagai orchestrator menjalankan banyak skill: bila task
+butuh skill terpasang lain (mis. `audit-proyek`), manager memasukkannya
+ke brief dan papan — itulah logikanya: orcestra mengatur, skill lain
+mengeksekusi keahliannya.
 
 ## Cara memanggil per peran
 

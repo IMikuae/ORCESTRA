@@ -12,7 +12,8 @@ ke AI → agent itu menjalankan `install.sh` → skill aktif.
 
 | Komponen | Isi |
 |---|---|
-| `skills/orcestra/` | **Skill** — `SKILL.md` + `references/` (routing, katalog 921 skill, workflow, mode eksekusi) + `playbooks/` (advisory, audit backend, audit UI) |
+| `skills/orcestra/` | **Skill utama (orchestrator)** — `SKILL.md` + `references/` (routing, katalog 921 skill, workflow, mode eksekusi) + `playbooks/` (advisory, audit backend, audit UI) |
+| `skills/audit-proyek/` | **Skill audit** — audit proyek sekali jalan (backend, layout UI, keamanan kilat) → temuan siap jadi baris `TASKS.md` |
 | `agents/opencode/` | 6 agent OpenCode V2 (5 sub-agent + manager) — `permissions:` berurutan |
 | `agents/claude/` | 6 agent Claude Code (5 sub-agent + manager) — `tools:` / `disallowedTools:` |
 | `agents/universal/` | 6 agent Agent Skills spec — untuk Codex, Cursor, dan lainnya |
@@ -67,7 +68,7 @@ Opsi:
 ./install.sh --target /path/ke/project       # pasang ke project lain
 ./install.sh --dry-run                       # tampilkan rencana, tanpa menulis
 ./install.sh --uninstall                     # copot dari project ini
-node verify.mjs                              # cek paket utuh (197 pemeriksaan)
+node verify.mjs                              # cek paket utuh (210 pemeriksaan)
 ```
 
 ### Cara C — `npx skills` (ecosystem resmi, 75+ agent)
@@ -77,6 +78,8 @@ npx skills add IMikuae/ORCESTRA --skill orcestra -a opencode -a claude-code -a c
 ```
 
 CLI `skills` mencari skill di `skills/<nama>/SKILL.md` — letaknya sudah sesuai.
+Pasang per skill dengan `--skill <nama>`; ulangi flag-nya untuk beberapa skill
+(mis. `--skill orcestra --skill audit-proyek`).
 
 > **Catatan:** `npx skills` hanya memasang **skill**. Enam definisi agent
 > (5 sub-agent + manager) harus disalin manual — pakai `install.sh` (Cara B)
@@ -88,11 +91,14 @@ CLI `skills` mencari skill di `skills/<nama>/SKILL.md` — letaknya sudah sesuai
 
 | Platform | Skill | Sub-agent |
 |---|---|---|
-| **OpenCode V2** | `.opencode/skills/orcestra/` | `.opencode/agents/*.md` |
-| **Claude Code** | `.claude/skills/orcestra/` | `.claude/agents/*.md` |
-| **Codex / Cursor / Cline / Gemini / Zed / Warp / …** | `.agents/skills/orcestra/` | — (lihat §6) |
-| **Hermes** | `.hermes/skills/orcestra/` | — (skill saja; delegasi via `delegate_tool`) |
-| **Global (semua project)** | `~/.config/opencode/skills/`, `~/.claude/skills/`, `~/.agents/skills/`, `~/.hermes/skills/` | `~/.config/opencode/agents/`, `~/.claude/agents/` |
+| **OpenCode V2** | `.opencode/skills/<skill>/` | `.opencode/agents/*.md` |
+| **Claude Code** | `.claude/skills/<skill>/` | `.claude/agents/*.md` |
+| **Codex / Cursor / Cline / Gemini / Zed / Warp / …** | `.agents/skills/<skill>/` | — (lihat §6) |
+| **Hermes** | `.hermes/skills/<skill>/` | — (skill saja; delegasi via `delegate_tool`) |
+| **Global (semua project)** | `~/.config/opencode/skills/<skill>/`, `~/.claude/skills/<skill>/`, `~/.agents/skills/<skill>/`, `~/.hermes/skills/<skill>/` | `~/.config/opencode/agents/`, `~/.claude/agents/` |
+
+Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`
+dan `audit-proyek`. Installer memasang semuanya sekaligus, bukan satu skill saja.
 
 Tiga lokasi skill di atas **saling dibaca** oleh masing-masing agent. Installer
 menulis ke semuanya, jadi agent mana pun yang kamu pakai akan menemukannya.
@@ -211,6 +217,9 @@ orcestra/
 │       ├── backend-audit.md     ← checklist audit backend
 │       ├── ui-layout-audit.md   ← checklist audit layout UI
 │       └── scripts/verify-runtime-patching.sh
+├── skills/audit-proyek/       ← skill audit proyek sekali jalan
+│   ├── SKILL.md
+│   └── references/checklist.md  ← backend, layout UI, keamanan kilat
 ```
 
 ---
@@ -234,7 +243,7 @@ sebagainya. Untuk Codex/Cursor: skill muncul di daftar skill.
 Paket juga bisa dicek sendiri, tanpa memasang apa pun:
 
 ```bash
-node verify.mjs     # 197 pemeriksaan: format frontmatter, paritas, katalog, link
+node verify.mjs     # 210 pemeriksaan: format frontmatter, paritas, katalog, link, multi-skill
 ```
 
 ---
@@ -248,6 +257,7 @@ node verify.mjs     # 197 pemeriksaan: format frontmatter, paritas, katalog, lin
 | Routing skill | `skills/orcestra/references/capabilities.md` |
 | Katalog skill | `skills/orcestra/references/catalog.md` § "Cara menambah skill" |
 | Mode eksekusi skill | `skills/orcestra/references/execution-modes.md` |
+| Skill baru | `skills/<nama-kebab>/SKILL.md` — installer memasangnya otomatis, gate `verify.mjs` §1b |
 | Dukungan platform baru | `install.sh` (tabel `PLATFORMS`) + `verify.mjs` §7 + `README.md` §3 |
 |.Playbook baru | `skills/orcestra/playbooks/_TEMPLATE.md` |
 
