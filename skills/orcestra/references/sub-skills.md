@@ -43,6 +43,7 @@ Benar: selain `architect` masih ada lima peran lain — `manager`,
 | Skill | Dipakai untuk | Output |
 |---|---|---|
 | `audit-proyek` | Audit proyek sekali jalan: backend, layout UI, keamanan kilat | daftar temuan siap jadi baris `TASKS.md` |
+| `ui-layout` | Membangun layout tanpa celah/overflow, responsif, semua state tertangani | file layout/komponen + checklist yang lolos |
 
 Skill `orcestra` sebagai orchestrator menjalankan banyak skill: bila task
 butuh skill terpasang lain (mis. `audit-proyek`), manager memasukkannya

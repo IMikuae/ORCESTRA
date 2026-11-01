@@ -33,8 +33,8 @@ laporkan error-nya, jangan menebak.
 | Codex / Cursor / lainnya | `.agents/skills/<skill>/` | `~/.agents/skills/<skill>/` | — (skill saja) |
 | Hermes | `.hermes/skills/<skill>/` | `~/.hermes/skills/<skill>/` | — (skill saja) |
 
-Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`
-dan `audit-proyek`. Installer memasang semuanya sekaligus.
+Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`,
+`audit-proyek`, dan `ui-layout`. Installer memasang semuanya sekaligus.
 
 ## Catatan Hermes
 
