@@ -93,6 +93,9 @@ bash skills/orcestra/playbooks/scripts/verify-runtime-patching.sh  # hanya bila
 | `skills/audit-proyek/` | skill audit proyek sekali jalan yang dipasang bersamaan |
 | `skills/ui-layout/` | skill bangun layout tanpa celah yang dipasang bersamaan |
 | `skills/backend/` | skill bangun API backend yang dipasang bersamaan |
+| `skills/deploy/` | skill rilis yang aman yang dipasang bersamaan |
+| `skills/testing/` | skill menulis test yang dipasang bersamaan |
+| `skills/performance/` | skill ukur & optimalkan performa yang dipasang bersamaan |
 | `src/agents/` | sumber tunggal definisi agent |
 | `agents/{opencode,claude,universal}/` | hasil render `build.py` |
 | `build.py` | renderer + verifier pemetaan izin |

@@ -34,7 +34,8 @@ laporkan error-nya, jangan menebak.
 | Hermes | `.hermes/skills/<skill>/` | `~/.hermes/skills/<skill>/` | — (skill saja) |
 
 Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`,
-`audit-proyek`, `ui-layout`, dan `backend`. Installer memasang semuanya sekaligus.
+`audit-proyek`, `ui-layout`, `backend`, `deploy`, `testing`, dan
+`performance`. Installer memasang semuanya sekaligus.
 
 ## Catatan Hermes
 
