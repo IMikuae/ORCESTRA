@@ -20,6 +20,8 @@ layout yang sudah ada) ada di playbook audit layout UI skill `orcestra`
 | Breakpoint | Layout tidak rusak di mobile, tablet, desktop (pakai breakpoint proyek) |
 | Overflow | Tidak ada scroll horizontal tak disengaja atau konten terpotong |
 | Sentuh | Target sentuh cukup besar; aksi penting terjangkau jempol di mobile |
+| Gambar & media | Gambar responsif (ukuran sesuai tampil), rasio aspek terjaga, tidak pecah layout |
+| Uji viewport | Diuji di matriks viewport (mobile/tablet/desktop) + zoom, bukan hanya satu ukuran |
 
 ## 3. State & aksesibilitas
 

@@ -25,6 +25,8 @@ ke AI → agent itu menjalankan `install.sh` → skill aktif.
 | `skills/security-audit/` | **Skill audit keamanan** — audit mendalam: threat model, auth, injeksi, XSS, CSRF, SSRF, IDOR, upload, rate limit, kripto + katalog serangan (SQL injection, DDoS, dll) |
 | `skills/auth/` | **Skill auth** — membangun autentikasi & otorisasi: sesi, token & refresh, OAuth/OIDC, RBAC, MFA, reset password |
 | `skills/incident-response/` | **Skill insiden** — menangani insiden keamanan: triase, containment, eradikasi, pemulihan, postmortem |
+| `skills/theme/` | **Skill tema** — membangun sistem tema: design token, warna, tipografi, mode gelap/terang tanpa flash |
+| `skills/forms/` | **Skill formulir** — membangun formulir yang mudah diisi: label, validasi, pesan error yang bisa ditindak, multi-step |
 | `agents/opencode/` | 6 agent OpenCode V2 (5 sub-agent + manager) — `permissions:` berurutan |
 | `agents/claude/` | 6 agent Claude Code (5 sub-agent + manager) — `tools:` / `disallowedTools:` |
 | `agents/universal/` | 6 agent Agent Skills spec — untuk Codex, Cursor, dan lainnya |
@@ -79,7 +81,7 @@ Opsi:
 ./install.sh --target /path/ke/project       # pasang ke project lain
 ./install.sh --dry-run                       # tampilkan rencana, tanpa menulis
 ./install.sh --uninstall                     # copot dari project ini
-node verify.mjs                              # cek paket utuh (320 pemeriksaan)
+node verify.mjs                              # cek paket utuh (340 pemeriksaan)
 ```
 
 ### Cara C — `npx skills` (ecosystem resmi, 75+ agent)
@@ -111,8 +113,8 @@ Pasang per skill dengan `--skill <nama>`; ulangi flag-nya untuk beberapa skill
 Pola `<skill>` berlaku untuk tiap skill yang terdaftar; saat ini: `orcestra`,
 `audit-proyek`, `ui-layout`, `backend`, `deploy`, `testing`,
 `performance`, `database`, `hardening`, `observability`,
-`security-audit`, `auth`, dan `incident-response`. Installer memasang
-semuanya sekaligus, bukan satu skill saja.
+`security-audit`, `auth`, `incident-response`, `theme`, dan `forms`.
+Installer memasang semuanya sekaligus, bukan satu skill saja.
 
 Tiga lokasi skill di atas **saling dibaca** oleh masing-masing agent. Installer
 menulis ke semuanya, jadi agent mana pun yang kamu pakai akan menemukannya.
@@ -236,7 +238,13 @@ orcestra/
 │   └── references/checklist.md  ← backend, layout UI, keamanan kilat
 ├── skills/ui-layout/          ← skill bangun layout tanpa celah
 │   ├── SKILL.md
-│   └── references/checklist.md  ← struktur, responsif, state, aksesibilitas
+│   └── references/              ← checklist + responsive-patterns.md
+├── skills/theme/              ← skill sistem tema
+│   ├── SKILL.md
+│   └── references/checklist.md  ← token, warna, tipografi, gelap/terang
+├── skills/forms/              ← skill formulir yang mudah diisi
+│   ├── SKILL.md
+│   └── references/checklist.md  ← label, validasi, pesan error, multi-step
 ├── skills/backend/            ← skill bangun API backend
 │   ├── SKILL.md
 │   └── references/checklist.md  ← API, validasi, auth, migrasi, error
@@ -290,7 +298,7 @@ sebagainya. Untuk Codex/Cursor: skill muncul di daftar skill.
 Paket juga bisa dicek sendiri, tanpa memasang apa pun:
 
 ```bash
-node verify.mjs     # 320 pemeriksaan: format frontmatter, paritas, katalog, link, multi-skill
+node verify.mjs     # 340 pemeriksaan: format frontmatter, paritas, katalog, link, multi-skill
 ```
 
 ---
