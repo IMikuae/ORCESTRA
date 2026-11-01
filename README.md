@@ -67,7 +67,7 @@ Opsi:
 ./install.sh --target /path/ke/project       # pasang ke project lain
 ./install.sh --dry-run                       # tampilkan rencana, tanpa menulis
 ./install.sh --uninstall                     # copot dari project ini
-node verify.mjs                              # cek paket utuh (188 pemeriksaan)
+node verify.mjs                              # cek paket utuh (197 pemeriksaan)
 ```
 
 ### Cara C — `npx skills` (ecosystem resmi, 75+ agent)
@@ -201,6 +201,7 @@ orcestra/
 │   │   ├── catalog.md           ← L3: 921 baris + cara menambah skill
 │   │   ├── workflow.md          ← loop, brief, bukti, tabrakan file
 │   │   ├── execution-modes.md   ← mode tanya-satu-satu vs langsung
+│   │   ├── sub-skills.md        ← daftar pilih: semua tim atau satu peran
 │   │   ├── TASKS-template.md    ← papan tugas
 │   │   └── agents/              ← 5 sub-agent + manager (OpenCode flavour)
 │   └── playbooks/
@@ -233,7 +234,7 @@ sebagainya. Untuk Codex/Cursor: skill muncul di daftar skill.
 Paket juga bisa dicek sendiri, tanpa memasang apa pun:
 
 ```bash
-node verify.mjs     # 188 pemeriksaan: format frontmatter, paritas, katalog, link
+node verify.mjs     # 197 pemeriksaan: format frontmatter, paritas, katalog, link
 ```
 
 ---

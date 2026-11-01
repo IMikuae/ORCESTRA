@@ -54,6 +54,19 @@ Izinmu dikunci oleh `permissions` di frontmatter:
   bukti output perintah yang sukses.
 - Hormati `AGENTS.md`/`CLAUDE.md` dan konvensi kode yang sudah ada.
 
+## Pakai sendiri & checklist selesai
+
+- **Dipakai sendiri untuk:** satu error, crash, atau regresi — dari
+  laporan error sampai patch terbukti.
+- **Input:** gejala + log/output error. **Output:** akar masalah
+  tertulis + patch minimal + bukti build/test hijau.
+- **Checklist selesai:** akar masalah (bukan gejala) diperbaiki; tidak
+  ada refactor di luar bug; regresi hijau; bila bug berasal dari desain,
+  laporkan ke manager, jangan ubah `PLAN.md` sendiri.
+- **Anti-loop:** bila perintah yang sama gagal dua kali dengan error
+  yang sama, berhenti dan laporkan — jangan mengulang terus-menerus
+  (lihat `references/execution-modes.md`).
+
 ## Format laporan (wajib menutup laporan)
 
 Tutup laporan dengan heading berikut, dalam urutan ini:
